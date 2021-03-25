@@ -263,6 +263,10 @@ def schema_for_column_datatype(col):
         schema['type'] = nullable_column('string', col.is_primary_key)
         return schema
 
+    if data_type == 'ltree':
+        schema['type'] = nullable_column('string', col.is_primary_key)
+        return schema
+
     if data_type == 'character varying':
         schema['type'] = nullable_column('string', col.is_primary_key)
         if col.character_maximum_length:
@@ -336,6 +340,8 @@ def schema_for_column(col_info):
         column_schema['items'] = {'$ref': '#/definitions/sdc_recursive_integer_array'}
     elif col_info.sql_data_type == 'text[]':
         column_schema['items'] = {'$ref': '#/definitions/sdc_recursive_string_array'}
+    # elif col_info.sql_data_type == 'ltree[]':
+    #     column_schema['items'] = {'$ref': '#/definitions/sdc_recursive_string_array'}
     elif col_info.sql_data_type == 'timestamp without time zone[]':
         column_schema['items'] = {'$ref': '#/definitions/sdc_recursive_timestamp_array'}
     elif col_info.sql_data_type == 'timestamp with time zone[]':

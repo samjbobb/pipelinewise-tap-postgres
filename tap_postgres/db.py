@@ -68,6 +68,12 @@ def prepare_columns_for_select_sql(c, md_map):
                f'OR {column_name} > \'9999-12-31 23:59:59.999\' THEN \'9999-12-31 23:59:59.999\' ' \
                f'ELSE {column_name} ' \
                f'END AS {column_name}'
+    # Cast ltree arrays to text arrays when selecting.
+    # The better way to do this would be to register an ltree type with psycopg, for example:
+    # https://github.com/dvarrazzo/py-ltree/blob/master/ltree/pg.py
+    # https://www.psycopg.org/docs/extensions.html#psycopg2.extensions.register_type
+    if ('properties', c) in md_map and md_map[('properties', c)]['sql-datatype'] == 'ltree[]':
+        return f'{column_name}::text[]'
     return column_name
 
 def prepare_columns_sql(c):
